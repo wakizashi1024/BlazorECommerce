@@ -6,35 +6,14 @@
     transition: transform .2s;
 }
 
-.media-img:hover {
-    transform: scale(1.1);
-}
-
-.media {
-    display: flex;
-    align-items: flex-start;
-}
+    .media-img:hover {
+        transform: scale(1.1);
+    }
 
 .media-img-wrapper {
     width: 200px;
     text-align: center;
 }
 
-.media-body {
-    flex: 1;
-}
-
-.price {
-    color: green;
-}
-
 @media (max-width: 1024px) {
-    .media {
-        flex-direction: column;
-    }
-
-    .media-img-wrapper {
-        width: 100%;
-        height: auto;
-    }
 }
