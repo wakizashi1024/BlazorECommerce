@@ -1,6 +1,7 @@
 global using Microsoft.EntityFrameworkCore;
 global using BlazorECommerce.Shared;
 global using BlazorECommerce.Server.Data;
+global using BlazorECommerce.Server.Services.ProductService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
