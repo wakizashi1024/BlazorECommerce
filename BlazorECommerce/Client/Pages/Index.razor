@@ -1,5 +1,22 @@
-﻿@page "/"
+﻿@inject IProductService ProductService
+
+@page "/"
+@page "/{categoryUrl}"
 
 <PageTitle>Index</PageTitle>
 
-<ProductList />
+<ProductList isLoading="@isLoading" />
+
+@code {
+    [Parameter]
+    public string? categoryUrl { get; set; } = null;
+
+    private bool isLoading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        await ProductService.GetProducts(categoryUrl);
+        isLoading = false;
+    }
+}

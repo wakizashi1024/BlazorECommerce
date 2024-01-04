@@ -1,7 +1,8 @@
 ﻿@inject IProductService ProductService
+@implements IDisposable 
 
 <ul class="list-unstyled">
-@if (ProductService.Products is not null && Initialized)
+@if (!isLoading && ProductService.Products is not null)
 {
     if (ProductService.Products.Count == 0)
     {
@@ -38,12 +39,26 @@ else
 </ul>
 
 @code {
-    private bool Initialized = false;
+    [Parameter]
+    public bool isLoading { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await ProductService.GetProducts();
+    // }
+
+    protected override void OnInitialized()
     {
-        Console.WriteLine(ProductService.Products);
-        await ProductService.GetProducts();
-        Initialized = true;
+        // ProductService.ProductsChanged += StateHasChanged;
+    }
+
+    // protected override void OnParametersSet()
+    // {
+    //     Console.WriteLine(isLoading);
+    // }
+
+    public void Dispose()
+    {
+        // ProductService.ProductsChanged -= StateHasChanged;
     }
 }

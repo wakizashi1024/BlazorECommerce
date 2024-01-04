@@ -2,6 +2,7 @@ global using Microsoft.EntityFrameworkCore;
 global using BlazorECommerce.Shared;
 global using BlazorECommerce.Server.Data;
 global using BlazorECommerce.Server.Services.ProductService;
+global using BlazorECommerce.Server.Services.CategoryService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
