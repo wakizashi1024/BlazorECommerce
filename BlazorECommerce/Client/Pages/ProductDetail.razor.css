@@ -17,3 +17,7 @@
         max-width: 300px;
     }
 }
+
+.original-price {
+    text-decoration: line-through;
+}

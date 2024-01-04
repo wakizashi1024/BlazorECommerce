@@ -14,9 +14,28 @@ else
         <div class="media-body">
             <h2 class="mb-0">@product.Title</h2>
             <p>@product.Description</p>
+            @* $@product.Price *@
+        @if (currentVariant is not null)
+        {
+            <div class="mb-3">
+                <label for="input-product-type">Product type:</label>
+                <select id="input-product-type" class="form-select" @bind="currentTypeId">
+                @foreach(var variant in product.Variants)
+                {
+                    <option value="@variant.ProductTypeId">@variant.ProductType.Name</option>
+                }
+                </select>
+            </div>
+            @if (currentVariant.OriginalPrice > currentVariant.Price)
+            {
+                <h6 class="text-muted original-price">
+                    $@currentVariant.OriginalPrice
+                </h6>
+            }
             <h4 class="price">
-                @* $@product.Price *@
+                $@currentVariant.Price
             </h4>
+        }
         </div>
     </div>
 }
@@ -24,6 +43,17 @@ else
 @code {
     private Product? product = null;
     private string message = "Loading product...";
+    private int _currentTypeId = 1;
+    public int currentTypeId
+    {
+        get => _currentTypeId;
+        set
+        {
+            _currentTypeId = value;
+            currentVariant = GetSelectedVariant();
+        }
+    }
+    private ProductVariant? currentVariant = null;
 
     [Parameter]
     public int Id { get; set; }
@@ -39,6 +69,18 @@ else
         else
         {
             product = result.Data;
+            if (product is not null && product.Variants.Count > 0)
+            {
+                currentTypeId = product.Variants[0].ProductTypeId;
+                // currentVariant = GetSelectedVariant();
+            }
         }
+    }
+
+    private ProductVariant GetSelectedVariant()
+    {
+        var variant = product?.Variants.FirstOrDefault(v => v.ProductTypeId == currentTypeId);
+
+        return variant;
     }
 }
