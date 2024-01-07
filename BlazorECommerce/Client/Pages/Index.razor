@@ -6,8 +6,15 @@
 
 <PageTitle>Index</PageTitle>
 
-@* <ProductList isLoading="@isLoading" /> *@
-<ProductList />
+@if(searchText is null && categoryUrl is null)
+{
+    <FeaturedProducts />
+}
+else
+{
+    @* <ProductList isLoading="@isLoading" /> *@
+    <ProductList />
+}
 
 @code {
     [Parameter]

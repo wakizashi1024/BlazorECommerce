@@ -53,4 +53,12 @@ public class ProductController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet("featured")]
+    public async Task<ActionResult<ServiceResponse<IEnumerable<Product>>>> GetFeaturedProducts()
+    {
+        var result = await _productService.GetFeaturedProducts();
+
+        return Ok(result);
+    }
 }

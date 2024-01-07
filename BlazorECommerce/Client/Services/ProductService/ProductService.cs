@@ -22,7 +22,7 @@ public class ProductService : IProductService
         BeforeRequestProducts();
 
         var result = categoryUrl is null 
-            ? await _http.GetFromJsonAsync<ServiceResponse<ICollection<Product>>>("api/Product")
+            ? await _http.GetFromJsonAsync<ServiceResponse<ICollection<Product>>>("api/Product/featured")
             : await _http.GetFromJsonAsync<ServiceResponse<ICollection<Product>>>($"api/Product/category/{categoryUrl}");
 
         if (result is not null && result.Data is not null)

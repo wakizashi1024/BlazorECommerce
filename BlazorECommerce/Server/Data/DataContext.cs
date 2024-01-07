@@ -53,6 +53,7 @@ public class DataContext : DbContext
                  Description = "《麥田捕手》（英語：The Catcher in the Rye），中國大陸譯為《麥田裡的守望者》，為美國作家J.D.沙林傑於1951年發表的長篇小說。這部有爭議的作品原本是面向成年讀者的，但迅速因其青春期焦慮和隔絕的主題而在青少年讀者中流行。該書以主人公荷頓·考菲爾德第一人稱口吻講述自己被學校開除學籍後在紐約城遊蕩將近兩晝夜，企圖逃出虛偽的成人世界、去尋求純潔與真理的經歷與感受。",
                  ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/The_Catcher_in_the_Rye_%281951%2C_first_edition_cover%29.jpg/413px-The_Catcher_in_the_Rye_%281951%2C_first_edition_cover%29.jpg",
                  CategoryId = 1,
+                 Featured = true,
              },
             new Product
             {
@@ -77,6 +78,7 @@ public class DataContext : DbContext
                 Description = "《新上海灘》（英語：Shanghai Grand）是一部1996年上映的香港電影，由潘文杰執導，徐克監製，劉德華、張國榮和寧靜主演。故事以1930年代民國上海為背景，講述中日民族矛盾、黑幫鬥爭、兄弟情義和兒女情長。香港收穫2083萬港幣，位列香港年度華語片第八位。",
                 ImageUrl = "https://upload.wikimedia.org/wikipedia/zh/b/b8/Shanghai_Grand_poster.jpg",
                 CategoryId = 2,
+                Featured = true,
             },
             new Product
             {
@@ -109,6 +111,7 @@ public class DataContext : DbContext
                 Description = "《俠盜獵車手V》（英語：Grand Theft Auto V）是由Rockstar North製作並由Rockstar Games發行的2013年開放世界動作冒險遊戲，這是繼2008年的《俠盜獵車手IV》之後，《俠盜獵車手》系列中的第七個主要作品，也是第十五部作品。單人遊戲故事設定在虛構的聖安地列斯，以南加州為基礎，講述了三位主角——退休的銀行搶劫犯麥可·迪聖塔、街頭黑幫富蘭克林·柯林頓以及毒販和槍手崔佛·菲利普。本作於2013年9月17日在PlayStation 3和Xbox 360主機上推出。由於本作是第七世代遊戲機末期推出的大型作品之一，因此在上市前便獲得了廣大的期待。",
                 ImageUrl = "https://upload.wikimedia.org/wikipedia/zh/0/0a/V_coverart_1024x768.jpg",
                 CategoryId = 3,
+                Featured = true,
             },
             new Product
             {

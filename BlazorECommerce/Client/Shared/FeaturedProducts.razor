@@ -1,69 +1,57 @@
 ﻿@inject IProductService ProductService
-@implements IDisposable 
+@implements IDisposable
 
-<ul class="list-unstyled">
+<div class="text-center">
+    <h2>Top Products of Today</h2>
+</div>
 @if (isLoading is not null && isLoading == true)
 {
     <li>Loading...</li>
 }
 else if (ProductService.Products is null || ProductService.Products.Count == 0)
 {
+    <div class="text-center"> 
     @if (isLoading is null)
     {
-        <li>@ProductService.Message</li>
+        <span>@ProductService.Message</span>
     }
     else
     {
-        <li>There is no any product here.</li>
+        <span>There is no any product here.</span>
     }
+    </div>
 }
 else
 {
+    <div class="container">
     @foreach (var product in ProductService.Products)
     {
-        <li class="media my-3">
-            <div class="media-img-wrapper mr-2">
-                <a href="@($"/product/{product.Id}")">
-                    <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
-                </a>
-            </div>
-            <div class="media-body">
+        @if (product.Featured)
+        {
+            <div class="featured-product">
+                <div>
                     <a href="@($"/product/{product.Id}")">
-                    <h4 class="mb-0">@product.Title</h4>
-                </a>
-                <p>@product.Description</p>
+                        <img src="@product.ImageUrl" alt="@product.Title" />
+                    </a>
+                </div>
+                <h4><a href="@($"/product/{product.Id}")">@product.Title</a></h4>
                 <h5 class="price">
                     @* $@product.Price *@
                     @GetPriceText(product)
                 </h5>
             </div>
-        </li>
+        }
     }
+    </div>
 }
-</ul>
 
 @code {
     [Parameter]
     public bool? isLoading { get; set; } = null;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     await ProductService.GetProducts();
-    // }
-
     protected override void OnInitialized()
     {
         ProductService.ProductsChanged += StateHasChanged;
-    }
-
-    // protected override void OnParametersSet()
-    // {
-    //     Console.WriteLine(isLoading);
-    // }
-
-    public void Dispose()
-    {
-        ProductService.ProductsChanged -= StateHasChanged;
     }
 
     private string GetPriceText(Product product)
@@ -72,7 +60,7 @@ else
         if (variants.Count == 0)
         {
             return string.Empty;
-        } 
+        }
         else if (variants.Count == 1)
         {
             return $"${variants[0].Price}";
@@ -81,5 +69,10 @@ else
         decimal minPrice = variants.Min(v => v.Price);
 
         return $"${minPrice} up";
+    }
+
+    public void Dispose()
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
     }
 }
