@@ -76,7 +76,7 @@ a, .btn-link {
     flex: 1;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
     .media {
         flex-direction: column;
     }
