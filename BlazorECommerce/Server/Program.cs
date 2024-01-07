@@ -23,6 +23,15 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+var jiebaNetConfigPath = builder.Configuration.GetValue<string>("JiebaConfigFileDir");
+if (jiebaNetConfigPath is not null)
+{
+    JiebaNet.Segmenter.ConfigManager.ConfigFileBaseDir = Path.IsPathRooted(jiebaNetConfigPath)
+        ? jiebaNetConfigPath
+        : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, jiebaNetConfigPath);
+}
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

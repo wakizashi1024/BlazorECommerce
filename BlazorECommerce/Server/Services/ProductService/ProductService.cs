@@ -1,4 +1,7 @@
 ﻿
+using JiebaNet.Segmenter;
+using System.Text.RegularExpressions;
+
 namespace BlazorECommerce.Server.Services.ProductService;
 
 public class ProductService : IProductService
@@ -52,5 +55,67 @@ public class ProductService : IProductService
         };
 
         return response;
+    }
+
+    public async Task<ServiceResponse<IEnumerable<Product>>> SearchProducts(string searchText)
+    {
+        var response = new ServiceResponse<IEnumerable<Product>>
+        {
+            Data = await FindProductBySearchText(searchText),
+        };
+
+        return response;
+    }
+
+    public async Task<ServiceResponse<IEnumerable<string>>> GetProductSearchSuggestions(string searchText)
+    {
+        var products = await FindProductBySearchText(searchText);
+
+        ICollection<string> result = new List<string>();
+
+        foreach(var product in products)
+        {
+            if (product.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(product.Title);
+            }
+
+            if (product.Description is not null && searchText.Length > 1)
+            {
+                var punctuation = product.Description
+                    .Where(char.IsPunctuation)
+                    .Distinct()
+                    .ToArray();
+                // If description has any non eng or charactor, Use Jieba split words.
+                var words = Regex.IsMatch(new string(product.Description.Where(c => !char.IsPunctuation(c)).ToArray()), @"^[a-zA-Z0-9\s]+$")
+                        ? product.Description.Split()
+                            .Select(s => s.Trim(punctuation))
+                        : new JiebaSegmenter().CutForSearch(product.Description)
+                            .Select(s => s.Trim(punctuation));
+                foreach (var word in words)
+                {
+                    if (word.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                        && !result.Contains(word))
+                    {
+                        result.Add(word);
+                    }
+                }
+            }
+        }
+
+        return new ServiceResponse<IEnumerable<string>> 
+        { 
+            Data = result 
+        };
+    }
+
+    private async Task<IEnumerable<Product>> FindProductBySearchText(string searchText)
+    {
+        return await _context.Products
+                .Where(p => p.Title.ToLower().Contains(searchText.ToLower())
+                    || p.Description.ToLower().Contains(searchText.ToLower())
+                )
+                .Include(p => p.Variants)
+                .ToListAsync();
     }
 }

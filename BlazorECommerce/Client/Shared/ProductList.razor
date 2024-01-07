@@ -2,46 +2,50 @@
 @implements IDisposable 
 
 <ul class="list-unstyled">
-@if (!isLoading && ProductService.Products is not null)
+@if (isLoading is not null && isLoading == true)
 {
-    if (ProductService.Products.Count == 0)
+    <li>Loading...</li>
+}
+else if (ProductService.Products is null || ProductService.Products.Count == 0)
+{
+    @if (isLoading is null)
     {
-        <li>All products has been sold out, comeback later.</li>
+        <li>@ProductService.Message</li>
     }
     else
     {
-
-        @foreach (var product in ProductService.Products)
-        {
-            <li class="media my-3">
-                <div class="media-img-wrapper mr-2">
-                    <a href="@($"/product/{product.Id}")">
-                        <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
-                    </a>
-                </div>
-                <div class="media-body">
-                        <a href="@($"/product/{product.Id}")">
-                        <h4 class="mb-0">@product.Title</h4>
-                    </a>
-                    <p>@product.Description</p>
-                    <h5 class="price">
-                        @* $@product.Price *@
-                        @GetPriceText(product)
-                    </h5>
-                </div>
-            </li>
-        }
+        <li>There is no any product here.</li>
     }
 }
 else
 {
-    <li>Loading...</li>
+    @foreach (var product in ProductService.Products)
+    {
+        <li class="media my-3">
+            <div class="media-img-wrapper mr-2">
+                <a href="@($"/product/{product.Id}")">
+                    <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
+                </a>
+            </div>
+            <div class="media-body">
+                    <a href="@($"/product/{product.Id}")">
+                    <h4 class="mb-0">@product.Title</h4>
+                </a>
+                <p>@product.Description</p>
+                <h5 class="price">
+                    @* $@product.Price *@
+                    @GetPriceText(product)
+                </h5>
+            </div>
+        </li>
+    }
 }
+
 </ul>
 
 @code {
     [Parameter]
-    public bool isLoading { get; set; }
+    public bool? isLoading { get; set; } = null;
 
     // protected override async Task OnInitializedAsync()
     // {
@@ -50,7 +54,7 @@ else
 
     protected override void OnInitialized()
     {
-        // ProductService.ProductsChanged += StateHasChanged;
+        ProductService.ProductsChanged += StateHasChanged;
     }
 
     // protected override void OnParametersSet()
@@ -60,7 +64,7 @@ else
 
     public void Dispose()
     {
-        // ProductService.ProductsChanged -= StateHasChanged;
+        ProductService.ProductsChanged -= StateHasChanged;
     }
 
     private string GetPriceText(Product product)

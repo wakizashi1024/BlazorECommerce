@@ -2,21 +2,33 @@
 
 @page "/"
 @page "/{categoryUrl}"
+@page "/search/{searchText}"
 
 <PageTitle>Index</PageTitle>
 
-<ProductList isLoading="@isLoading" />
+@* <ProductList isLoading="@isLoading" /> *@
+<ProductList />
 
 @code {
     [Parameter]
     public string? categoryUrl { get; set; } = null;
 
-    private bool isLoading = true;
+    [Parameter]
+    public string? searchText { get; set; } = null;
+
+    // private bool isLoading = true;
 
     protected override async Task OnParametersSetAsync()
     {
-        isLoading = true;
-        await ProductService.GetProducts(categoryUrl);
-        isLoading = false;
+        // isLoading = true;
+        if (searchText is not null && searchText.Trim().Length > 0)
+        {
+            await ProductService.SearchProducts(searchText);
+        }
+        else
+        {
+            await ProductService.GetProducts(categoryUrl);
+        }
+        // isLoading = false;
     }
 }
