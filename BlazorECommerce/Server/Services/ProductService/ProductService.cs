@@ -1,5 +1,6 @@
 ﻿
 using JiebaNet.Segmenter;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Text.RegularExpressions;
 
 namespace BlazorECommerce.Server.Services.ProductService;
@@ -57,11 +58,23 @@ public class ProductService : IProductService
         return response;
     }
 
-    public async Task<ServiceResponse<IEnumerable<Product>>> SearchProducts(string searchText)
+    public async Task<ServiceResponse<ProductSearchResultDto>> SearchProducts(string searchText, int page, int pageSize = 2)
     {
-        var response = new ServiceResponse<IEnumerable<Product>>
+        var pageCount = Math.Ceiling((await FindProductBySearchText(searchText).CountAsync()) / (decimal)pageSize);
+        var products = await FindProductBySearchText(searchText)
+                            .Skip((page - 1) * (int)pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+
+        var response = new ServiceResponse<ProductSearchResultDto>
         {
-            Data = await FindProductBySearchText(searchText),
+            Data = new ProductSearchResultDto
+            {
+                Pages = (int)pageCount,
+                Products = products,
+                CurrentPage = page,
+                PageSize = pageSize,
+            }
         };
 
         return response;
@@ -69,7 +82,7 @@ public class ProductService : IProductService
 
     public async Task<ServiceResponse<IEnumerable<string>>> GetProductSearchSuggestions(string searchText)
     {
-        var products = await FindProductBySearchText(searchText);
+        var products = await FindProductBySearchText(searchText).ToListAsync();
 
         ICollection<string> result = new List<string>();
 
@@ -109,16 +122,6 @@ public class ProductService : IProductService
         };
     }
 
-    private async Task<IEnumerable<Product>> FindProductBySearchText(string searchText)
-    {
-        return await _context.Products
-                .Where(p => p.Title.ToLower().Contains(searchText.ToLower())
-                    || p.Description.ToLower().Contains(searchText.ToLower())
-                )
-                .Include(p => p.Variants)
-                .ToListAsync();
-    }
-
     public async Task<ServiceResponse<IEnumerable<Product>>> GetFeaturedProducts()
     {
         var response = new ServiceResponse<IEnumerable<Product>>
@@ -130,5 +133,13 @@ public class ProductService : IProductService
         };
 
         return response;
+    }
+    private IIncludableQueryable<Product, List<ProductVariant>> FindProductBySearchText(string searchText)
+    {
+        return _context.Products
+                .Where(p => p.Title.ToLower().Contains(searchText.ToLower())
+                    || p.Description.ToLower().Contains(searchText.ToLower())
+                )
+                .Include(p => p.Variants);
     }
 }

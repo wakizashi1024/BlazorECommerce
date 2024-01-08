@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace BlazorECommerce.Client.Services.ProductService;
@@ -8,7 +9,9 @@ public class ProductService : IProductService
     private readonly HttpClient _http;
 
     public event Action ProductsChanged;
-
+    public int CurrentPage { get; set; } = 1;
+    public int PageCount { get; set; } = 0;
+    public string LastSearchText { get; set; }
     public ICollection<Product> Products { get; set; }
     public string Message { get; set; } = "Loading products...";
 
@@ -29,6 +32,13 @@ public class ProductService : IProductService
         {
             Products = result.Data;
         }
+        CurrentPage = 1;
+        PageCount = 0;
+
+        if (Products.Count == 0)
+        {
+            Message = "No prodcut found";
+        }
 
         AfterRequestProducts();
     }
@@ -40,15 +50,18 @@ public class ProductService : IProductService
         return result;
     }
 
-    public async Task SearchProducts(string searchText)
+    public async Task SearchProducts(string searchText, int page)
     {
+        LastSearchText = searchText;
         BeforeRequestProducts();
 
-        var result = await _http.GetFromJsonAsync<ServiceResponse<ICollection<Product>>>($"api/product/search/{searchText}");
+        var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResultDto>>($"api/product/search/{searchText}/{page}");
 
         if (result is not null)
         {
-            Products = result.Data;
+            Products = (ICollection<Product>)result.Data.Products;
+            PageCount = result.Data.Pages;
+            CurrentPage = result.Data.CurrentPage;
         }
 
         AfterRequestProducts();
