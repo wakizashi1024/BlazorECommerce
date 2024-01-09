@@ -1,0 +1,31 @@
+﻿@inject ICartService CartService
+@implements IDisposable
+
+<a href="cart" class="btn btn-info">
+    <i class="oi oi-cart"></i>
+    <span class="badge">@cartItemsCount @(cartItemsQuantity > 0 ? $"({cartItemsQuantity})" : "")</span>
+</a>
+
+@code {
+    private int cartItemsCount = 0;
+    private int cartItemsQuantity = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreashCartItems();
+        CartService.OnChange += new Action(async () => await RefreashCartItems());
+    }
+
+    private async Task RefreashCartItems()
+    {
+        var cartItems = await CartService.GetCartItems();
+        cartItemsCount = cartItems.Count();
+        cartItemsQuantity = cartItems.Sum(x => x.Quantity);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        CartService.OnChange -= new Action(async () => await RefreashCartItems());
+    }
+}

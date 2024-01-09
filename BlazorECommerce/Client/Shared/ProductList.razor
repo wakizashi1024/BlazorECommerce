@@ -28,14 +28,18 @@ else
                 </a>
             </div>
             <div class="media-body">
+                <div class="media-body-header">
                     <a href="@($"/product/{product.Id}")">
-                    <h4 class="mb-0">@product.Title</h4>
-                </a>
-                <p>@product.Description</p>
-                <h5 class="price">
-                    @* $@product.Price *@
-                    @GetPriceText(product)
-                </h5>
+                        <h4 class="mb-0">@product.Title</h4>
+                    </a>
+                    <p>@product.Description</p>
+                </div>
+                <div class="media-body-footer">
+                    <h5 class="price">
+                        @* $@product.Price *@
+                        @GetPriceText(product)
+                    </h5>
+                </div>
             </div>
         </li>
     }

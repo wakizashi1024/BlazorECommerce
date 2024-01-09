@@ -74,6 +74,17 @@ a, .btn-link {
 
 .media-body {
     flex: 1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+.media-body-header {
+    flex-grow: 1;
+}
+
+.media-body-footer {
+    flex: 1;
 }
 
 @media (max-width: 1023.98px) {

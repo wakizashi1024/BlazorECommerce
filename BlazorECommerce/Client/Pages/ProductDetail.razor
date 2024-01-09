@@ -1,5 +1,6 @@
 ﻿@page "/product/{id:int}"
 @inject IProductService ProductService
+@inject ICartService CartService
 
 @if(product == null)
 {
@@ -12,29 +13,42 @@ else
             <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
         </div>
         <div class="media-body">
-            <h2 class="mb-0">@product.Title</h2>
-            <p>@product.Description</p>
-            @* $@product.Price *@
+            <div class="media-body-header">
+                <h2 class="mb-0">@product.Title</h2>
+                <p>@product.Description</p>
+                @* $@product.Price *@
+            </div>
         @if (currentVariant is not null)
         {
-            <div class="mb-3">
-                <label for="input-product-type">Product type:</label>
-                <select id="input-product-type" class="form-select" @bind="currentTypeId">
-                @foreach(var variant in product.Variants)
-                {
-                    <option value="@variant.ProductTypeId">@variant.ProductType.Name</option>
-                }
-                </select>
+            <div class="media-body-footer">
+                <div class="mb-3">
+                    <label for="input-product-type">Product type:</label>
+                    <select id="input-product-type" class="form-select" @bind="currentTypeId">
+                    @foreach(var variant in product.Variants)
+                    {
+                        <option value="@variant.ProductTypeId">@variant.ProductType.Name</option>
+                    }
+                    </select>
+                </div>
+                <div class="price-actions-area">
+                    <div class="price-area">
+                    @if (currentVariant.OriginalPrice > currentVariant.Price)
+                    {
+                        <h6 class="text-muted original-price">
+                            $@currentVariant.OriginalPrice
+                        </h6>
+                    }
+                        <h4 class="price">
+                            $@currentVariant.Price
+                        </h4>
+                    </div>
+                    <div class="actions-area">
+                        <button class="btn btn-primary" @onclick="@AddToCart">
+                            <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;AddToCart
+                        </button>
+                    </div>
+                </div>
             </div>
-            @if (currentVariant.OriginalPrice > currentVariant.Price)
-            {
-                <h6 class="text-muted original-price">
-                    $@currentVariant.OriginalPrice
-                </h6>
-            }
-            <h4 class="price">
-                $@currentVariant.Price
-            </h4>
         }
         </div>
     </div>
@@ -82,5 +96,16 @@ else
         var variant = product?.Variants.FirstOrDefault(v => v.ProductTypeId == currentTypeId);
 
         return variant;
+    }
+
+    private async Task AddToCart()
+    {
+        var productVariant = GetSelectedVariant();
+        var cartItem = new CartItem
+        {
+            ProductId = productVariant.ProductId,
+            ProductTypeId = productVariant.ProductTypeId,
+        };
+        await CartService.AddToCart(cartItem);
     }
 }

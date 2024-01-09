@@ -21,3 +21,19 @@
 .original-price {
     text-decoration: line-through;
 }
+
+.price-actions-area {
+    display: flex;
+    flex-direction: row;
+}
+
+.price-area {
+    align-self: flex-end;
+}
+
+.actions-area {
+    flex-grow: 1;
+    text-align: right;
+    align-self: flex-end;
+    margin-bottom: 6px;
+}

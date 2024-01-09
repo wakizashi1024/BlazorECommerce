@@ -1,8 +1,7 @@
-﻿namespace BlazorECommerce.Client.Services.CategoryService
+﻿namespace BlazorECommerce.Client.Services.CategoryService;
+
+public interface ICategoryService
 {
-    public interface ICategoryService
-    {
-        ICollection<Category> Categories { get; set; }
-        Task GetCategories();
-    }
+    ICollection<Category> Categories { get; set; }
+    Task GetCategories();
 }

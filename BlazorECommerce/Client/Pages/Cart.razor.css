@@ -1,0 +1,36 @@
+﻿.container
+{
+    display: flex;
+    padding: 6px;
+}
+
+.image-wrapper
+{
+    width: 150px;
+    text-align: center;
+}
+
+.image {
+    max-width: 150px;
+    max-height: 150px;
+    padding: 6px;
+}
+
+.name {
+    flex-grow: 1;
+    padding: 6px;
+}
+
+.cart-product-price {
+    font-weight: 600;
+    text-align: right;
+}
+
+.actions {
+    align-self: center;
+}
+
+.input-quantity {
+    width: 80px;
+    text-align: center;
+}

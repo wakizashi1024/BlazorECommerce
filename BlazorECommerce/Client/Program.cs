@@ -3,6 +3,8 @@ global using BlazorECommerce.Shared;
 using BlazorECommerce.Client;
 using BlazorECommerce.Client.Services.CategoryService;
 using BlazorECommerce.Client.Services.ProductService;
+using BlazorECommerce.Client.Services.CartService;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -12,7 +14,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+builder.Services.AddBlazoredLocalStorage();
+
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 await builder.Build().RunAsync();
