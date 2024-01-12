@@ -1,0 +1,72 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.WebUtilities
+@inject IAuthService AuthService
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Login</PageTitle>
+
+<div style="max-width: 400px; margin: 0 auto;">
+    <h3>Login</h3>
+    <EditForm Model="user" OnValidSubmit="@HandleLogin">
+        <DataAnnotationsValidator />
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="email">Email</label>
+            <InputText id="email" class="form-control" type="text" aria-label="email" @bind-Value="user.Email" />
+        </div>
+        <ValidationMessage For="@(() => user.Email)" />
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="password">Password</label>
+            <InputText id="password" class="form-control" type="password" aria-label="password" @bind-Value="user.Password" />
+        </div>
+        <ValidationMessage For="@(() => user.Password)" />
+        <div class="actions text-end">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+        @* <ValidationSummary /> *@
+        <div class="text-danger">
+            <span>@message</span>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private UserLoginDto user = new UserLoginDto();
+    private string message = string.Empty;
+    private string returnUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            returnUrl = url;
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.Login(user);
+        if (result.Success)
+        {
+            message = string.Empty;
+
+            await LocalStorage.SetItemAsStringAsync("accessToken", result.Data);
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            if (returnUrl is not null)
+            {
+                NavigationManager.NavigateTo(returnUrl);
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        else
+        {
+            message = result.Message;
+        }
+    }
+}
