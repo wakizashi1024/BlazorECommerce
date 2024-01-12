@@ -18,7 +18,7 @@
         @foreach(var category in CategoryService.Categories)
         {
             <div class="nav-item px-2">
-                <NavLink class="nav-link" href="@category.Url">
+                <NavLink class="nav-link" href="@($"category/{category.Url}")">
                     @category.Name
                 </NavLink>
             </div>
