@@ -119,4 +119,40 @@ public class AuthService : IAuthService
         return jwtString;
     }
 
+    public async Task<ServiceResponse<bool>> ChangePassword(int userId, string oldPassword, string newPassword)
+    {
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return new ServiceResponse<bool>
+            {
+                Success = false,
+                Data = false,
+                Message = "User not found."
+            };
+        }
+
+        if (!VerifyPasswordHash(oldPassword, user.PasswordHash, user.PasswordSalt))
+        {
+            return new ServiceResponse<bool>
+            {
+                Success = false,
+                Data = false,
+                Message = "Old password does not match."
+            };
+        }
+
+        CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+        user.PasswordHash = passwordHash;
+        user.PasswordSalt = passwordSalt;
+
+        await _context.SaveChangesAsync();
+
+        return new ServiceResponse<bool>
+        {
+            Data = true,
+            Message = "New password has been changed."
+        };
+    }
 }

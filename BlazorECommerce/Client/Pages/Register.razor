@@ -3,30 +3,33 @@
 
 <PageTitle>Register</PageTitle>
 
-<div style="max-width: 400px; margin: 0 auto;">
+<div style="max-width: 400px; margin: 2px auto;">
     <h3>Register</h3>
     <EditForm Model="user" OnValidSubmit="@HandleRegistration">
         <DataAnnotationsValidator />
         <div class="input-group mb-2">
             <label class="input-group-text" for="email">Email</label>
-            <InputText id="email" class="form-control" type="text" aria-label="email" @bind-Value="user.Email" />
+            <InputText id="email" class="form-control" type="text" aria-label="email" @bind-Value="@user.Email" />
         </div>
         <ValidationMessage For="@(() => user.Email)" />
+
         <div class="input-group mb-2">
             <label class="input-group-text" for="password">Password</label>
-            <InputText id="password" class="form-control" type="password" aria-label="password" @bind-Value="user.Password" />
+            <InputText id="password" class="form-control" type="password" aria-label="password" @bind-Value="@user.Password" />
         </div>
         <ValidationMessage For="@(() => user.Password)" />
+
         <div class="input-group mb-2">
             <label class="input-group-text" for="confirm-password">Confirm password</label>
-            <InputText id="confirm-password" class="form-control" type="password" aria-label="confirm-password" @bind-Value="user.ConfirmPassword" />
+            <InputText id="confirm-password" class="form-control" type="password" aria-label="confirm-password" @bind-Value="@user.ConfirmPassword" />
         </div>
         <ValidationMessage For="@(() => user.ConfirmPassword)" />
+
         <div class="actions text-end">
             <button type="submit" class="btn btn-primary">Register</button>
         </div>
         @* <ValidationSummary /> *@
-        <div class="@messageCssClass">
+        <div class="text-center @messageCssClass">
             <span>@message</span>
         </div>
     </EditForm>

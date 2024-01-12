@@ -7,25 +7,27 @@
 
 <PageTitle>Login</PageTitle>
 
-<div style="max-width: 400px; margin: 0 auto;">
+<div style="max-width: 400px; margin: 2px auto;">
     <h3>Login</h3>
     <EditForm Model="user" OnValidSubmit="@HandleLogin">
         <DataAnnotationsValidator />
         <div class="input-group mb-2">
             <label class="input-group-text" for="email">Email</label>
-            <InputText id="email" class="form-control" type="text" aria-label="email" @bind-Value="user.Email" />
+            <InputText id="email" class="form-control" type="text" aria-label="email" @bind-Value="@user.Email" />
         </div>
         <ValidationMessage For="@(() => user.Email)" />
+
         <div class="input-group mb-2">
             <label class="input-group-text" for="password">Password</label>
-            <InputText id="password" class="form-control" type="password" aria-label="password" @bind-Value="user.Password" />
+            <InputText id="password" class="form-control" type="password" aria-label="password" @bind-Value="@user.Password" />
         </div>
         <ValidationMessage For="@(() => user.Password)" />
+
         <div class="actions text-end">
             <button type="submit" class="btn btn-primary">Login</button>
         </div>
         @* <ValidationSummary /> *@
-        <div class="text-danger">
+        <div class="text-center text-danger">
             <span>@message</span>
         </div>
     </EditForm>

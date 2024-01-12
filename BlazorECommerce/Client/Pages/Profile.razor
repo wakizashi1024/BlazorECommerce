@@ -1,10 +1,51 @@
 ﻿@page "/profile"
+@inject IAuthService AuthService
 @attribute [Authorize]
 
-<AuthorizeView>
-    <h3>Logged in with <i>@context.User.Identity.Name</i></h3>
-</AuthorizeView>
+<div style="max-width: 400px; margin: 2px auto;">
+    <AuthorizeView>
+        <h3 class="text-center">Logged in with <i>@context.User.Identity.Name</i></h3>
+    </AuthorizeView>
+    <hr />
+    <h5 class="mb-2">Change Password</h5>
+    <EditForm Model="request" OnValidSubmit="ChangePassword">
+        <DataAnnotationsValidator />
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="old-password">Old password</label>
+            <InputText id="old-password" class="form-control" type="password" aria-label="old-password" @bind-Value="@request.OldPassword" />
+        </div>
+        <ValidationMessage For="@(() => request.OldPassword)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="new-password">New password</label>
+            <InputText id="new-password" class="form-control" type="password" aria-label="new-password" @bind-Value="@request.NewPassword" />
+        </div>
+        <ValidationMessage For="@(() => request.NewPassword)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="confirm-password">Confirm password</label>
+            <InputText id="confirm-password" class="form-control" type="password" aria-label="confirm-password" @bind-Value="@request.ConfirmNewPassword" />
+        </div>
+        <ValidationMessage For="@(() => request.ConfirmNewPassword)" />
+        <div class="actions text-end">
+            <button type="submit" class="btn btn-primary">Change password</button>
+        </div>
+        @* <ValidationSummary /> *@
+        <div class="text-center @messageCssClass">
+            <span>@message</span>
+        </div>
+    </EditForm>
+</div>
 
 @code {
+    private UserChangePasswordDto request = new UserChangePasswordDto();
+    private string messageCssClass = string.Empty;
+    private string message = string.Empty;
 
+    private async Task ChangePassword()
+    {
+        var result = await AuthService.ChangePassword(request);
+        message = result.Message;
+        messageCssClass = result.Success ? "text-success" : "text-danger";
+    }
 }

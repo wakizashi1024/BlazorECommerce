@@ -23,5 +23,12 @@ namespace BlazorECommerce.Client.Services.AuthService
 
             return await result.Content.ReadFromJsonAsync<ServiceResponse<string>>();
         }
+
+        public async Task<ServiceResponse<bool>> ChangePassword(UserChangePasswordDto request)
+        {
+            var result = await _http.PostAsJsonAsync("api/Auth/change-password", request);
+
+            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
     }
 }
