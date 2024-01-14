@@ -61,15 +61,11 @@ else
 
     private async Task RefreshCart()
     {
-        var cartItems = await CartService.GetCartItems();
-        if (cartItems.Count() == 0)
+        await CartService.GetCartItemsCount();
+        cartProducts = await CartService.GetCartProducts();
+        if (cartProducts is null || cartProducts.Count() == 0)
         {
             message = "Your cart is empty";
-            cartProducts = new List<CartProductResponseDto>();
-        }
-        else
-        {
-            cartProducts = await CartService.GetCartProducts();
         }
     }
 

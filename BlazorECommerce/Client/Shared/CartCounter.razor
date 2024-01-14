@@ -18,7 +18,7 @@
 
     private async Task RefreashCartItems()
     {
-        var cartItems = await CartService.GetCartItems();
+        var cartItems = await CartService.GetCartProducts();
         cartItemsCount = cartItems.Count();
         cartItemsQuantity = cartItems.Sum(x => x.Quantity);
         StateHasChanged();

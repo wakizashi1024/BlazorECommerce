@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject IAuthService AuthService
 @inject ILocalStorageService LocalStorage
+@inject ICartService CartService
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
@@ -56,6 +57,9 @@
 
             await LocalStorage.SetItemAsStringAsync("accessToken", result.Data);
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            await CartService.StoreCartItems(true);
+            await CartService.GetCartItemsCount();
 
             if (returnUrl is not null)
             {
