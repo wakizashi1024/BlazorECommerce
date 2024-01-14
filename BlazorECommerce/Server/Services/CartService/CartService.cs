@@ -6,12 +6,13 @@ namespace BlazorECommerce.Server.Services.CartService;
 public class CartService : ICartService
 {
     private readonly DataContext _context;
+    private readonly IAuthService _authService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CartService(DataContext context, IHttpContextAccessor httpContextAccessor)
+    public CartService(DataContext context, IAuthService authService)
     {
         _context = context;
-        _httpContextAccessor = httpContextAccessor;
+        _authService = authService;
     }
 
     public async Task<ServiceResponse<ICollection<CartProductResponseDto>>> GetCartProdcuts(IEnumerable<CartItem> cartItems)
@@ -65,7 +66,7 @@ public class CartService : ICartService
         foreach (var cartItem in cartItems)
         {
             // cartItem.UserId = userId;
-            cartItem.UserId = GetUserId();
+            cartItem.UserId = _authService.GetUserId();
         }
         _context.CartItems.AddRange(cartItems);
         await _context.SaveChangesAsync();
@@ -76,7 +77,7 @@ public class CartService : ICartService
     public async Task<ServiceResponse<int>> GetCartItemsCount()
     {
         var count = await _context.CartItems
-            .Where(ci => ci.UserId == GetUserId())
+            .Where(ci => ci.UserId == _authService.GetUserId())
             .CountAsync();
 
         return new ServiceResponse<int> 
@@ -85,21 +86,19 @@ public class CartService : ICartService
         };
     }
 
-    private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-
     public async Task<ServiceResponse<ICollection<CartProductResponseDto>>> GetDbCartProducts()
     {
         return await GetCartProdcuts(await _context.CartItems
-            .Where(ci => ci.UserId == GetUserId()).ToListAsync());
+            .Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync());
     }
 
     public async Task<ServiceResponse<bool>> AddToCart(CartItem cartItem)
     {
-        cartItem.UserId = GetUserId();
+        cartItem.UserId = _authService.GetUserId();
 
         var sameItem = await _context.CartItems
             .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId
-                && ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == GetUserId()
+                && ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == cartItem.UserId
             );
         if (sameItem is null)
         {
@@ -122,7 +121,7 @@ public class CartService : ICartService
     {
         var dbCartItem = await _context.CartItems
             .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId
-                && ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == GetUserId()
+                && ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == _authService.GetUserId()
             );
         if (dbCartItem is null)
         {
@@ -151,7 +150,7 @@ public class CartService : ICartService
     {
         var dbCartItem = await _context.CartItems
             .FirstOrDefaultAsync(ci => ci.ProductId == productId
-                && ci.ProductTypeId == productTypeId && ci.UserId == GetUserId()
+                && ci.ProductTypeId == productTypeId && ci.UserId == _authService.GetUserId()
             );
         if (dbCartItem is null)
         {

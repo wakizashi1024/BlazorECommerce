@@ -1,12 +1,21 @@
 ﻿@page "/cart"
 @inject ICartService CartService
+@inject IOrderService OrderService
 
 <PageTitle>Shopping Cart</PageTitle>
 
 <div class="text-center"><h3>Shopping Cart</h3></div>
 @if (cartProducts == null || cartProducts.Count() == 0)
 {
-    <span>@message</span>
+    <div class="text-center">
+        <span>@message</span>
+    </div>
+}
+else if (orderPlaced)
+{
+    <div class="text-center">
+        <span>Thanks for your order! <br /> Check your orders <a href="orders">here</a></span>
+    </div>
 }
 else
 {
@@ -42,14 +51,17 @@ else
     <div class="cart-product-price">
         Total (@cartProducts.Sum(product => product.Quantity)): $@cartProducts.Sum(product => product.Price * product.Quantity)
     </div>
+    <button @onclick="@PlaceOrder" class="btn alert-success float-end my-2">Place Order</button>
 }
 
 @code {
     private IEnumerable<CartProductResponseDto> cartProducts = null;
     private string message = "Loading cart...";
+    private bool orderPlaced = false;
 
     protected override async Task OnInitializedAsync()
     {
+        orderPlaced = false;
         await RefreshCart();
     }
 
@@ -83,5 +95,12 @@ else
             ProductTypeId = product.ProductTypeId,
             Quantity = product.Quantity,
         });
+    }
+
+    private async Task PlaceOrder(MouseEventArgs e)
+    {
+        await OrderService.PlaceOrder();
+        orderPlaced = true;
+        await CartService.GetCartItemsCount();
     }
 }
