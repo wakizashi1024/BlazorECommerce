@@ -1,4 +1,3 @@
-using BlazorECommerce.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorECommerce.Server.Controllers

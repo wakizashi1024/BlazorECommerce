@@ -1,7 +1,4 @@
-﻿
-using System.Security.Claims;
-
-namespace BlazorECommerce.Server.Services.OrderService;
+﻿namespace BlazorECommerce.Server.Services.OrderService;
 
 public class OrderService : IOrderService
 {
