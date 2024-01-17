@@ -14,14 +14,14 @@ public class OrderController : ControllerBase
         _orderService = orderService;
     }
 
-    [Authorize]
-    [HttpPost]
-    public async Task<ActionResult<ServiceResponse<bool>>> PlaceOrder()
-    {
-        var response = await _orderService.PlaceOrder();
+    //[Authorize]
+    //[HttpPost]
+    //public async Task<ActionResult<ServiceResponse<bool>>> PlaceOrder()
+    //{
+    //    var response = await _orderService.PlaceOrder();
         
-        return Ok(response);
-    }
+    //    return Ok(response);
+    //}
 
     [Authorize]
     [HttpGet]

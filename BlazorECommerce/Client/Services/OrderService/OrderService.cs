@@ -18,15 +18,20 @@ public class OrderService : IOrderService
     private async Task<bool> IsUserAuthenticated() => (await _authStateProvider.GetAuthenticationStateAsync())
         .User.Identity.IsAuthenticated;
 
-    public async Task PlaceOrder()
+    public async Task<string> PlaceOrder()
     {
         if (await IsUserAuthenticated())
         {
-            await _http.PostAsync("api/order", null);
+            // await _http.PostAsync("api/order", null);
+            var result = await _http.PostAsync("api/Payment/checkout", null);
+            var url = await result.Content.ReadAsStringAsync();
+
+            return url;
         }
         else
         {
-            _navigationManager.NavigateTo("login");
+            //_navigationManager.NavigateTo("login");
+            return "login";
         }
     }
 

@@ -27,6 +27,24 @@ else
         <div class="product-price">
             Total: $@order.TotalPrice
         </div>
+        <hr />
+    @if(order.ShipInfo is not null)
+    {
+        <div>
+            <h4>Shipping Information</h4>
+            <p>
+                <span>Name: @order.ShipInfo.Name</span><br />
+                <span>Country: @order.ShipInfo.Country</span><br />
+                <span>State: @order.ShipInfo.State</span><br />
+                <span>City: @order.ShipInfo.City</span><br />
+                <span>Line1: @order.ShipInfo.Line1</span><br />
+                <span>Line2: @order.ShipInfo.Line2</span><br />
+                <span>Post code: @order.ShipInfo.PostalCode</span><br />
+                <span>Contact phone number: @order.ShipInfo.Phone</span>
+            </p>
+        </div>
+    }
+        
     </div>
 }
 

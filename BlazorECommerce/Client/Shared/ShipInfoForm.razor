@@ -1,0 +1,117 @@
+﻿@inject IShipService ShipService
+
+<div class="mb-3">
+@if(shipInfo == null)
+{
+    <span>There is no any shipping information yet.&nbsp;
+        <button class="btn btn-secondary float-end" @onclick="@InitShipInfo">Create one</button>
+    </span>
+}
+else if(!isEditForm)
+{
+    <p>
+        <span>Name: @shipInfo.FirstName @shipInfo.LastName</span><br />
+        <span>Country: @shipInfo.Country</span><br />
+        <span>State: @shipInfo.State</span><br />
+        <span>City: @shipInfo.City</span><br />
+        <span>Line1: @shipInfo.Line1</span><br />
+        <span>Line2: @shipInfo.Line2</span><br />
+            <span>Post code: @shipInfo.PostalCode</span><br />
+        <span>Contact phone number: @shipInfo.Phone</span>
+    </p>
+    <div class="text-end">
+        <button class="btn btn-primary" @onclick="@EditShipInfo">Edit</button>
+    </div>
+}
+else
+{
+    <EditForm Model="@shipInfo" OnSubmit="@SubmitShipInfo">
+        <DataAnnotationsValidator />
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="first-name">First name</label>
+            <InputText id="first-name" class="form-control" type="text" aria-label="first-name" @bind-Value="@shipInfo.FirstName" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.FirstName)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="last-name">Last name</label>
+            <InputText id="last-name" class="form-control" type="text" aria-label="last-name" @bind-Value="@shipInfo.LastName" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.LastName)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="country">Country</label>
+            <InputText id="country" class="form-control" type="text" aria-label="country" @bind-Value="@shipInfo.Country" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.Country)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="state">State</label>
+            <InputText id="state" class="form-control" type="text" aria-label="state" @bind-Value="@shipInfo.State" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.State)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="city">City</label>
+            <InputText id="city" class="form-control" type="text" aria-label="city" @bind-Value="@shipInfo.City" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.City)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="line1">Line1</label>
+            <InputText id="line1" class="form-control" type="text" aria-label="line1" @bind-Value="@shipInfo.Line1" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.Line1)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="line2">Line2</label>
+            <InputText id="line2" class="form-control" type="text" aria-label="line2" @bind-Value="@shipInfo.Line2" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.Line2)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="postal-code">Post code</label>
+            <InputText id="postal-code" class="form-control" type="text" aria-label="postal-code" @bind-Value="@shipInfo.PostalCode" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.PostalCode)" />
+
+        <div class="input-group mb-2">
+            <label class="input-group-text" for="phone">Phone number</label>
+            <InputText id="phone" class="form-control" type="text" aria-label="phone" @bind-Value="@shipInfo.Phone" />
+        </div>
+        <ValidationMessage For="@(() => shipInfo.Phone)" />
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </EditForm>
+}
+</div>
+
+@code {
+    ShipInfo shipInfo = null;
+    bool isEditForm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        shipInfo = await ShipService.GetShipInfo();
+    }
+
+    private void InitShipInfo()
+    {
+        shipInfo = new ShipInfo();
+        // isEditForm = true;
+        EditShipInfo();
+    }
+
+    private void EditShipInfo()
+    {
+        isEditForm = true;
+    }
+
+    private async Task SubmitShipInfo()
+    {
+        isEditForm = false;
+        shipInfo = await ShipService.CreateOrUpdateShipInfo(shipInfo);
+    }
+}

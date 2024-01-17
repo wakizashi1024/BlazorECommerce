@@ -6,7 +6,9 @@ global using BlazorECommerce.Server.Services.CategoryService;
 global using BlazorECommerce.Server.Services.CartService;
 global using BlazorECommerce.Server.Services.AuthService;
 global using BlazorECommerce.Server.Services.OrderService;
-using Microsoft.AspNetCore.ResponseCompression;
+global using BlazorECommerce.Server.Services.PaymentService;
+global using BlazorECommerce.Server.Services.UserInfoService;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -62,6 +64,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IShipService, ShipService>();
 
 var jiebaNetConfigPath = builder.Configuration.GetValue<string>("JiebaConfigFileDir");
 if (jiebaNetConfigPath is not null)

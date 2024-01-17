@@ -4,6 +4,7 @@ using BlazorECommerce.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorECommerce.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240116145911_AddShipInfo")]
+    partial class AddShipInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,10 +96,6 @@ namespace BlazorECommerce.Server.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Remark")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -132,62 +131,6 @@ namespace BlazorECommerce.Server.Migrations
                     b.HasIndex("ProductTypeId");
 
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("BlazorECommerce.Shared.OrderShipInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Line1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Line2")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Remark")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique()
-                        .HasFilter("[OrderId] IS NOT NULL");
-
-                    b.ToTable("OrderShipInfos");
                 });
 
             modelBuilder.Entity("BlazorECommerce.Shared.Product", b =>
@@ -666,15 +609,6 @@ namespace BlazorECommerce.Server.Migrations
                     b.Navigation("ProductType");
                 });
 
-            modelBuilder.Entity("BlazorECommerce.Shared.OrderShipInfo", b =>
-                {
-                    b.HasOne("BlazorECommerce.Shared.Order", "Order")
-                        .WithOne("ShipInfo")
-                        .HasForeignKey("BlazorECommerce.Shared.OrderShipInfo", "OrderId");
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("BlazorECommerce.Shared.Product", b =>
                 {
                     b.HasOne("BlazorECommerce.Shared.Category", "Category")
@@ -717,8 +651,6 @@ namespace BlazorECommerce.Server.Migrations
             modelBuilder.Entity("BlazorECommerce.Shared.Order", b =>
                 {
                     b.Navigation("OrderItems");
-
-                    b.Navigation("ShipInfo");
                 });
 
             modelBuilder.Entity("BlazorECommerce.Shared.Product", b =>

@@ -279,4 +279,6 @@ public class DataContext : DbContext
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<ShipInfo> ShipInfos { get; set; }
+    public DbSet<OrderShipInfo> OrderShipInfos { get; set; }
 }

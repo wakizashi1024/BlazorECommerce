@@ -14,6 +14,17 @@ public class OrderService : IOrderService
         _authService = authService;
     }
 
+    public async Task<ServiceResponse<OrderShipInfo>> AddShipInfo(OrderShipInfo orderShipInfo)
+    {
+        await _context.OrderShipInfos.AddAsync(orderShipInfo);
+        await _context.SaveChangesAsync();
+
+        return new ServiceResponse<OrderShipInfo>
+        {
+            Data = orderShipInfo
+        };
+    }
+
     public async Task<ServiceResponse<OrderDetailsResponseDto>> GetOrderDetails(int orderId)
     {
         var response = new ServiceResponse<OrderDetailsResponseDto>();
@@ -22,6 +33,7 @@ public class OrderService : IOrderService
             .ThenInclude(oi => oi.Product)
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.ProductType)
+            .Include(o => o.ShipInfo)
             .Where(o => o.UserId == _authService.GetUserId() && o.Id == orderId)
             .OrderByDescending(o => o.OrderDate)
             .FirstOrDefaultAsync();
@@ -46,6 +58,7 @@ public class OrderService : IOrderService
                 Quantity = oi.Quantity,
                 TotalPrice = oi.TotalPrice,
             }).ToList(),
+            ShipInfo = order.ShipInfo,
         };
 
         response.Data = orderDetailsResponse;
@@ -80,10 +93,10 @@ public class OrderService : IOrderService
         return response;
     }
 
-    public async Task<ServiceResponse<bool>> PlaceOrder()
+    public async Task<ServiceResponse<bool>> PlaceOrder(int userId, string? remark = null)
     {
-        var userId = _authService.GetUserId();
-        var products = (await _cartService.GetDbCartProducts()).Data;
+        // var userId = _authService.GetUserId();
+        var products = (await _cartService.GetDbCartProducts(userId)).Data;
         
         var orderItems = new List<OrderItem>();
         decimal totalPrice = 0;
@@ -99,12 +112,17 @@ public class OrderService : IOrderService
             });
         }
 
+        var orderShipInfo = await _context.OrderShipInfos
+            .FirstOrDefaultAsync(osi => osi.Remark.Equals(remark));
+
         var order = new Order
         {
             UserId = userId,
             OrderItems = orderItems,
             TotalPrice = totalPrice,
             OrderDate = DateTime.Now,
+            ShipInfo = orderShipInfo ?? new OrderShipInfo(),
+            Remark = remark ?? "",
         };
 
         _context.Orders.Add(order);

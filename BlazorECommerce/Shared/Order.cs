@@ -9,6 +9,8 @@ public class Order
     public DateTime OrderDate { get; set; } = DateTime.Now;
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPrice { get; set; }
+    public string Remark { get; set; } = string.Empty;
     
     public List<OrderItem> OrderItems { get; set; }
+    public OrderShipInfo? ShipInfo { get; set; }
 }

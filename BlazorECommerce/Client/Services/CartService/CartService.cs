@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using System.Net.Http.Json;
 
 namespace BlazorECommerce.Client.Services.CartService;
 

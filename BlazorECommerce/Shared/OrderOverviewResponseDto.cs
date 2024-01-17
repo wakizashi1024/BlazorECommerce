@@ -7,5 +7,6 @@
         public decimal TotalPrice { get; set; }
         public string Product { get; set; }
         public string ProductImageUrl { get; set; }
+        public ShipInfo ShipInfo { get; set; }
     }
 }
