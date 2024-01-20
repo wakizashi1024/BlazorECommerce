@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorECommerce.Server.Controllers;
 
@@ -57,6 +58,42 @@ public class ProductController : ControllerBase
     public async Task<ActionResult<ServiceResponse<IEnumerable<Product>>>> GetFeaturedProducts()
     {
         var result = await _productService.GetFeaturedProducts();
+
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin")]
+    public async Task<ActionResult<ServiceResponse<IEnumerable<Product>>>> GetAdminProducts()
+    {
+        var result = await _productService.GetAdminProducts();
+
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<ActionResult<ServiceResponse<Product>>> CreateProduct(Product product)
+    {
+        var result = await _productService.CreateProduct(product);
+
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut]
+    public async Task<ActionResult<ServiceResponse<Product>>> UpdateProduct(Product product)
+    {
+        var result = await _productService.UpdateProduct(product);
+
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete]
+    public async Task<ActionResult<ServiceResponse<bool>>> DeleteProduct(int productId)
+    {
+        var result = await _productService.DeleteProduct(productId);
 
         return Ok(result);
     }

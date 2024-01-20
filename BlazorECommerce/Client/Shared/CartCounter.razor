@@ -1,7 +1,7 @@
 ﻿@inject ICartService CartService
 @implements IDisposable
 
-<a href="cart" class="btn btn-info">
+<a href="cart" class="btn btn-outline-info">
     <i class="oi oi-cart"></i>
     <span class="badge">@cartItemsCount @(cartItemsQuantity > 0 ? $"({cartItemsQuantity})" : "")</span>
 </a>

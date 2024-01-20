@@ -7,6 +7,7 @@ global using BlazorECommerce.Client.Services.CartService;
 global using BlazorECommerce.Client.Services.AuthService;
 global using BlazorECommerce.Client.Services.OrderService;
 global using BlazorECommerce.Client.Services.UserInfoService;
+global using BlazorECommerce.Client.Services.ProductTypeService;
 
 using BlazorECommerce.Client;
 using Blazored.LocalStorage;
@@ -31,5 +32,6 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IShipService, ShipService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
 await builder.Build().RunAsync();

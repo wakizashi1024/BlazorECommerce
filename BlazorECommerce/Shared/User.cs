@@ -7,6 +7,7 @@ public class User
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+    public string Role { get; set; } = "Customer";
 
     public ShipInfo ShipInfo { get; set; }
 }

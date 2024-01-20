@@ -14,6 +14,7 @@ public class ProductService : IProductService
     public string LastSearchText { get; set; }
     public ICollection<Product> Products { get; set; }
     public string Message { get; set; } = "Loading products...";
+    public ICollection<Product> AdminProducts { get; set; }
 
     public ProductService(HttpClient http)
     {
@@ -55,7 +56,7 @@ public class ProductService : IProductService
         LastSearchText = searchText;
         BeforeRequestProducts();
 
-        var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResultDto>>($"api/product/search/{searchText}/{page}");
+        var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResultDto>>($"api/Product/search/{searchText}/{page}");
 
         if (result is not null)
         {
@@ -89,5 +90,39 @@ public class ProductService : IProductService
         }
 
         ProductsChanged?.Invoke();
+    }
+
+    public async Task GetAdminProducts()
+    {
+        var result = await _http.GetFromJsonAsync<ServiceResponse<ICollection<Product>>>("api/Product/admin");
+
+        AdminProducts = result.Data;
+        CurrentPage = 1;
+        PageCount = 0;
+
+        if (AdminProducts.Count == 0)
+        {
+            Message = "No Product found";
+        }
+    }
+
+    public async Task<Product> CreateProduct(Product product)
+    {
+        var result = await _http.PostAsJsonAsync("api/product", product);
+        var newProduct = (await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>()).Data;
+
+        return newProduct;
+    }
+
+    public async Task<Product> UpdateProduct(Product product)
+    {
+        var result = await _http.PutAsJsonAsync($"api/Product", product);
+
+        return (await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>()).Data;
+    }
+
+    public async Task DeleteProduct(Product product)
+    {
+        var result = await _http.DeleteAsync($"api/Product{product.Id}");
     }
 }
